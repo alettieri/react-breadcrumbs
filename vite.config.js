@@ -8,7 +8,7 @@ export default {
   plugins: [reactRefresh()],
   server: {
     hmr: {
-      port: 443,
+      port: 443
     }
   }
 }
