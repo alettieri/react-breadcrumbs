@@ -1,19 +1,19 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
-import { BreadcrumbProvider } from './BreadcrumbProvider'
+import { BreadcrumbProvider } from '../BreadcrumbProvider'
+import useBreadcrumb from '../useBreadcrumb'
 import Breadcrumbs from './Breadcrumbs'
-import useBreadcrumb from './useBreadcrumb'
 
 import './App.css'
 
 const FirstPage = () => {
-  useBreadcrumb(['page.one', 'Page One'])
+  useBreadcrumb('page.one', { label: 'Page One', url: '/page1' })
   return <h1>Page One</h1>
 }
 
 const SecondPage = () => {
-  useBreadcrumb(['page.two', 'Page Two'])
+  useBreadcrumb('page.two', { label: 'Secon Page', url: '/page2' })
   return (
     <Switch>
       <Route path='/page2' exact>
@@ -29,11 +29,12 @@ const SecondPage = () => {
 }
 
 const SubPage = () => {
-  const [count, updateCount] = React.useState(0)
-  useBreadcrumb(['page.two.sub', `The count is: ${count}`])
+  const [count, updateCount] = React.useState(100)
+
+  useBreadcrumb('page.two.sub', { label: `The count is: ${count}` })
 
   const handleClick = () => {
-    updateCount((currentCount) => currentCount + 1)
+    updateCount(currentCount => currentCount + 1)
   }
 
   return (

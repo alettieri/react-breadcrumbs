@@ -1,18 +1,18 @@
 import React from 'react'
 import { BreadcrumbContext } from './BreadcrumbProvider'
 
-const useBreadcrumb = (crumbs) => {
+const useBreadcrumb = (key, crumb) => {
   const { breadcrumbs, addCrumb, removeCrumb } = React.useContext(
     BreadcrumbContext
   )
 
   React.useEffect(() => {
-    addCrumb(crumbs)
+    addCrumb(key, crumb)
 
     return () => {
-      removeCrumb(crumbs)
+      removeCrumb(key)
     }
-  }, [addCrumb, removeCrumb, crumbs])
+  }, [addCrumb, removeCrumb, key, crumb])
 
   return {
     breadcrumbs

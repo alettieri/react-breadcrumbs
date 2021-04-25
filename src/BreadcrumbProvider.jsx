@@ -13,18 +13,21 @@ const useBreadcrumbProvider = () => {
   // Expect addCrumb to be called in the reverse order
   // Given that the react tree is parsed bottom up
   const addCrumb = React.useCallback(
-    ([key, label] = []) => {
-      
-      if(!key) {
+    (key, newCrumb) => {
+      if (!key || !newCrumb) {
         return
       }
 
-      setCrumbs((currentCrumbs) => {
-        const currentLabel = currentCrumbs.get(key)
-        
-        if (label !== currentLabel) {
+      setCrumbs(currentCrumbs => {
+        const currentCrumb = currentCrumbs.get(key)
+
+        if (
+          !currentCrumb ||
+          newCrumb.label !== currentCrumb.label ||
+          newCrumb.url !== currentCrumb.url
+        ) {
           const updatedCrumbs = new Map([[key], ...currentCrumbs])
-          updatedCrumbs.set(key, label)
+          updatedCrumbs.set(key, newCrumb)
           return updatedCrumbs
         }
         return currentCrumbs
@@ -34,14 +37,13 @@ const useBreadcrumbProvider = () => {
   )
 
   const removeCrumb = React.useCallback(
-    ([key]) => {
-      
-      if(!key) {
+    key => {
+      if (!key) {
         return
       }
 
-      setCrumbs((currentCrumbs) => {
-        if(currentCrumbs.has(key)) {
+      setCrumbs(currentCrumbs => {
+        if (currentCrumbs.has(key)) {
           const newCrumbs = new Map(currentCrumbs)
           newCrumbs.delete(key)
           return newCrumbs
