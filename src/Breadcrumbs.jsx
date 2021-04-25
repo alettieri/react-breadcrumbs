@@ -6,13 +6,11 @@ const Breadcrumbs = () => {
   const {breadcrumbs} = useBreadcrumb()
 
   if(breadcrumbs.length === 0) {
-    return 'None'
+    return null
   }
 
   return (
-    <div>
-      <h5>Crumbs</h5>
-      {JSON.stringify(breadcrumbs)}
+    <div className='breadcrumbs'>
       <ul>
       {
         breadcrumbs.map(([key, label]) => <li key={key}>{label}</li>)

@@ -5,12 +5,14 @@ import { BreadcrumbProvider } from './BreadcrumbProvider'
 import Breadcrumbs from './Breadcrumbs'
 import useBreadcrumb from './useBreadcrumb'
 
-const PageOne = () => {
+import './App.css'
+
+const FirstPage = () => {
   useBreadcrumb(['page.one', 'Page One'])
   return <h1>Page One</h1>
 }
 
-const PageTwo = () => {
+const SecondPage = () => {
   useBreadcrumb(['page.two', 'Page Two'])
   return (
     <Switch>
@@ -19,39 +21,50 @@ const PageTwo = () => {
       </Route>
       <Switch>
         <Route path='/page2/:id'>
-          <PageTwoSub />
+          <SubPage />
         </Route>
       </Switch>
     </Switch>
   )
 }
 
-const PageTwoSub = () => {
-  useBreadcrumb(['page.two.sub', 'Page Two Sub'])
-  return (<h1>Page Two Sub</h1>)
+const SubPage = () => {
+  const [count, updateCount] = React.useState(0)
+  useBreadcrumb(['page.two.sub', `The count is: ${count}`])
+
+  const handleClick = () => {
+    updateCount((currentCount) => currentCount + 1)
+  }
+
+  return (
+    <div>
+      <h1>Sub Page</h1>
+      <button onClick={handleClick}>Update Count</button>
+    </div>
+  )
 }
 
 export default function App () {
   return (
     <BreadcrumbProvider>
       <main className='App'>
-        <Breadcrumbs />
         <Router>
-          <div>
+          <nav>
             <Link to='/'>Home</Link>&nbsp;
             <Link to='/page1'>Go to Page 1</Link>
             <Link to='/page2'>Go to Page 2</Link>
             <Link to='/page2/super'>Go to Page 3</Link>
-          </div>
+          </nav>
+          <Breadcrumbs />
           <Switch>
             <Route path='/' exact>
-              Home
+              <h1>Home</h1>
             </Route>
             <Route path='/page1'>
-              <PageOne />
+              <FirstPage />
             </Route>
             <Route path='/page2'>
-              <PageTwo />
+              <SecondPage />
             </Route>
           </Switch>
         </Router>
