@@ -6,7 +6,8 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "prettier-standard --lint",
-    "format": "prettier-standard --format",
+    "format:check": "prettier-standard --check",
+    "format:fix": "prettier-standard --format",
     "test": "NODE_ENV=test jest"
   },
   "dependencies": {

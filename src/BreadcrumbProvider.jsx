@@ -1,40 +1,61 @@
-import React, { createContext } from 'react'
+import React from 'react'
 
-const BreadcrumbContext = createContext({})
+const BreadcrumbContext = React.createContext({
+  breadcrumbs: [],
+  addCrumb: () => {},
+  removeCrumb: () => {}
+})
 
 const useBreadcrumbProvider = () => {
   const [crumbs, setCrumbs] = React.useState(new Map())
+  const breadcrumbs = React.useMemo(() => Array.from(crumbs), [crumbs])
 
-  // newCrumbs = [[key, value]]
-  const updateCrumbs = (...crumbsToAdd) => {
-    const newCrumbs = new Map(crumbs)
+  // Expect addCrumb to be called in the reverse order
+  // Given that the react tree is parsed bottom up
+  const addCrumb = React.useCallback(
+    ([key, label] = []) => {
+      
+      if(!key) {
+        return
+      }
 
-    for (const [key, value] of crumbsToAdd) {
-      newCrumbs.set(key, value)
-    }
+      setCrumbs((currentCrumbs) => {
+        const currentLabel = currentCrumbs.get(key)
+        
+        if (label !== currentLabel) {
+          const updatedCrumbs = new Map([[key], ...currentCrumbs])
+          updatedCrumbs.set(key, label)
+          return updatedCrumbs
+        }
+        return currentCrumbs
+      })
+    },
+    [setCrumbs]
+  )
 
-    const newCrumbValues = Array.from(newCrumbs.values())
-    const currentCrumbValues = Array.from(crumbs.values())
+  const removeCrumb = React.useCallback(
+    ([key]) => {
+      
+      if(!key) {
+        return
+      }
 
-    if (newCrumbValues.join('') !== currentCrumbValues.join('')) {
-      setCrumbs(newCrumbs)
-    }
-  }
-
-  const removeCrumbs = (...crumbsToRemove) => {
-    const crumbsToKeep = Array.from(crumbs.entries()).filter(
-      ([key]) => !crumbsToRemove.includes(key)
-    )
-
-    const updatedCrumbs = new Map(crumbsToKeep)
-
-    setCrumbs(updatedCrumbs)
-  }
+      setCrumbs((currentCrumbs) => {
+        if(currentCrumbs.has(key)) {
+          const newCrumbs = new Map(currentCrumbs)
+          newCrumbs.delete(key)
+          return newCrumbs
+        }
+        return currentCrumbs
+      })
+    },
+    [setCrumbs]
+  )
 
   return {
-    breadcrumbs: Array.from(crumbs),
-    updateCrumbs,
-    removeCrumbs
+    breadcrumbs,
+    addCrumb,
+    removeCrumb
   }
 }
 
